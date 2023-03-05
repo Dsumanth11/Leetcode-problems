@@ -21,15 +21,18 @@ class Solution {
                 qu.pop();
                 for(auto x:adj[nod])
                 {
-                    if(visited.find(x)==visited.end())
+                    if(x!=par)
                     {
-                        visited.insert(x);
-                        qu.push({x,nod});
-                    }
-                    else if(x!=par)
-                    {
-                        ans=true;
-                        return ;
+                        if(visited.find(x)==visited.end())
+                        {
+                            visited.insert(x);
+                            qu.push({x,nod});
+                        }
+                        else
+                        {
+                            ans=true;
+                            return ;
+                        }
                     }
                 }
             }
