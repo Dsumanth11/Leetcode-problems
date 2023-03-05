@@ -67,12 +67,9 @@ public:
                 {
                     continue;
                 }
-                else 
+                if(visited.find({i,j})==visited.end())
                 {
-                    if(visited.find({i,j})==visited.end())
-                    {
-                        ans++;
-                    }
+                    ans++;
                 }
             }
         }
