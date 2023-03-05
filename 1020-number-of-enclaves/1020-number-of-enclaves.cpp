@@ -69,11 +69,7 @@ public:
                 }
                 else 
                 {
-                    if(visited.find({i,j})!=visited.end())
-                    {
-                        
-                    }
-                    else
+                    if(visited.find({i,j})==visited.end())
                     {
                         ans++;
                     }
