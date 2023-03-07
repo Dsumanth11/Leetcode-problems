@@ -1,82 +1,35 @@
 class Solution {
 public:
-    bool DFS(int val,stack<int> &stk,map<int,vector<int>> &mp,vector<int> &visited,vector<int> &crvisit)
-    {
-        visited[val]=1;
-        crvisit[val]=1;
-        for(auto x:mp[val])
-        {
-            if(visited[x]==1)
-            {
-                if(crvisit[x]==1)
-                {
-                    for(auto y:mp[val])
-                    {
-                        crvisit[y]=1;
-                        visited[y]=1;
-                    }
-                    return false;
-                }
-            }
-            else
-            {
-                if(!DFS(x,stk,mp,visited,crvisit))
-                {
-                    for(auto y:mp[val])
-                    {
-                        crvisit[y]=1;
-                        visited[y]=1;
-                    }
-                    return false;
-                }
-            }
-        }
-        crvisit[val]=0;
-        stk.push(val);
-        return true;
-    }
-    vector<int> findOrder(int numCourses, vector<vector<int>>& pre) {
-        stack<int> stk;
+    vector<int> findOrder(int numCourses, vector<vector<int>>& p) {
+        vector<int> indegree(numCourses,0);
         map<int,vector<int>> mp;
-        for(int i=0;i<pre.size();i++)
+        for(int i=0;i<p.size();i++)
         {
-            mp[pre[i][1]].push_back(pre[i][0]);
+            indegree[p[i][0]]+=1;
+            mp[p[i][1]].push_back(p[i][0]);
         }
-        // for(auto x:mp)
-        // {
-        //     // cout<<x.first<<" : ";
-        //     for(auto y:x.second)
-        //     {
-        //         cout<<y<<" ";
-        //     }
-        //     cout<<"\n";
-        // }
-        vector<int> visited(numCourses,0);
-        vector<int> crvisit(numCourses,0);
+        queue<int> qu;
         for(int i=0;i<numCourses;i++)
         {
-            if(visited[i]==0)
+            if(indegree[i]==0)
             {
-                DFS(i,stk,mp,visited,crvisit);
+                qu.push(i);
             }
-            // for(auto x:visited)
-            // {
-            //     cout<<x<<" ";
-            // }
-            // cout<<"\n";
-            // for(auto x:crvisit)
-            // {
-            //     cout<<x<<" ";
-            // }
-            // cout<<"\n";
-            // cout<<stk.size()<<"\n\n";
         }
         vector<int> ans;
-        while(!stk.empty())
+        while(!qu.empty())
         {
-            if(crvisit[stk.top()]==0)
-                ans.push_back(stk.top());
-            stk.pop();
+            int frnt=qu.front();
+            ans.push_back(frnt);
+            qu.pop();
+            for(auto x:mp[frnt])
+            {
+                indegree[x]--;
+                if(indegree[x]==0)
+                {
+                    qu.push(x);
+                }
+            }
         }
         if(ans.size()!=numCourses)
         {
