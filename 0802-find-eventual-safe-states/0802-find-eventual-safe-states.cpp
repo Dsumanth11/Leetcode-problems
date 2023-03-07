@@ -1,42 +1,42 @@
 class Solution {
 public:
-    bool DFS(int nd,vector<int> &visit,vector<int> &crvisit,vector<vector<int>>& graph)
-    {
-        visit[nd]=1;
-        crvisit[nd]=1;
-        for(auto x:graph[nd])
-        {
-            if(crvisit[x]==1)
-            {
-                return false;
-            }
-            else if(crvisit[x]==0 && visit[x]==0)
-            {
-                if(!DFS(x,visit,crvisit,graph))
-                    return false;
-            }
-        }
-        crvisit[nd]=0;
-        return true;
-    }
     vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
-        vector<int> visit(graph.size(),0);
-        vector<int> crvisit(graph.size(),0);
+        vector<int> indegree(graph.size(),0);
+        map<int,vector<int>> mp;
         for(int i=0;i<graph.size();i++)
         {
-            if(visit[i]==0)
+            indegree[i]=graph[i].size();
+            for(auto x:graph[i])
             {
-                DFS(i,visit,crvisit,graph);
+                mp[x].push_back(i);
             }
         }
-        vector<int> ans;
-        for(int i=0;i<crvisit.size();i++)
+        queue<int> qu;
+        for(int i=0;i<graph.size();i++)
         {
-            if(crvisit[i]==0)
+            if(indegree[i]==0)
             {
-                ans.push_back(i);
+                qu.push(i);
             }
         }
-        return ans;
+        int ans=0;
+        vector<int> ab;
+        while(!qu.empty())
+        {
+            auto x=qu.front();
+            ab.push_back(x);
+            qu.pop();
+            ans++;
+            for(auto y:mp[x])
+            {
+                indegree[y]--;
+                if(indegree[y]==0)
+                {
+                    qu.push(y);
+                }
+            }
+        }
+        sort(ab.begin(),ab.end());
+        return ab;
     }
 };
