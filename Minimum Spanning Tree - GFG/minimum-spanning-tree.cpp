@@ -3,14 +3,6 @@
 using namespace std;
 
 // } Driver Code Ends
-
-class cmp
-{
-    bool operator()(pair<int,pair<int,int>> &a,pair<int,pair<int,int>> &b)
-    {
-        return a.first>b.first;
-    }
-};
 class Solution
 {
 	public:
@@ -19,28 +11,24 @@ class Solution
     {
         // code here
         vector<int> visited(V,0);
-        int sum=0;
         priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
         pq.push({0,0});
+        int sum=0;
         while(!pq.empty())
         {
             auto x=pq.top();
             pq.pop();
-            int ndval=x.second;
-            int nddis=x.first;
-            if(visited[ndval]==1)
+            if(visited[x.second]==1)
             {
                 continue;
             }
-            visited[ndval]=1;
-            sum+=nddis;
-            for(auto temp:adj[ndval])
+            visited[x.second]=1;
+            sum+=x.first;
+            for(auto temp:adj[x.second])
             {
-                int adjnode=temp[0];
-                int adjwt=temp[1];
-                if(visited[adjnode]==0)
+                if(visited[temp[0]]==0)
                 {
-                    pq.push({adjwt,adjnode});
+                    pq.push({temp[1],temp[0]});
                 }
             }
         }
