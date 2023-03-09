@@ -3,32 +3,72 @@
 using namespace std;
 
 // } Driver Code Ends
+
+struct abc
+{
+    int wt;
+    int n1;
+    int n2;
+};
+struct cmp
+{
+    bool operator()(pair<int,pair<int,int>> &a,pair<int,pair<int,int>> &b)
+    {
+        return a.first>b.first;
+    }
+};
 class Solution
 {
 	public:
 	//Function to find sum of weights of edges of the Minimum Spanning Tree.
+	int findUPnode(int node,vector<int> par)
+	{
+	    if(par[node]==node)
+	        return node;
+	    return par[node]=findUPnode(par[node],par);
+	}
     int spanningTree(int V, vector<vector<int>> adj[])
     {
         // code here
-        vector<int> visited(V,0);
-        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
-        pq.push({0,0});
+        priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,cmp> pq;
+        vector<int> par(V+1);
+        vector<int> size(V+1,1);
+        for(int i=1;i<=V;i++)
+        {
+            par[i]=i;
+        }
+        for(int i=0;i<V;i++)
+        {
+            for(auto x:adj[i])
+            {
+                pq.push({x[1],{i,x[0]}});
+            }
+        }
         int sum=0;
         while(!pq.empty())
         {
             auto x=pq.top();
             pq.pop();
-            if(visited[x.second]==1)
+            int n1=x.second.first;
+            int n2=x.second.second;
+            int ulp1=findUPnode(n1,par);
+            int ulp2=findUPnode(n2,par);
+            if(ulp1==ulp2)
             {
                 continue;
             }
-            visited[x.second]=1;
-            sum+=x.first;
-            for(auto temp:adj[x.second])
+            else
             {
-                if(visited[temp[0]]==0)
+                sum+=x.first;
+                if(size[ulp1]<size[ulp2])
                 {
-                    pq.push({temp[1],temp[0]});
+                    size[ulp2]+=size[ulp1];
+                    par[ulp1]=ulp2;
+                }
+                else
+                {
+                    size[ulp1]+=size[ulp2];
+                    par[ulp2]=ulp1;
                 }
             }
         }
